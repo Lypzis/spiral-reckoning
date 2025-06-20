@@ -1,0 +1,22 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: 'public/uploads'
+public_folder: '/uploads'
+
+collections:
+  - name: 'artifacts'
+    label: 'Lore Artifacts'
+    folder: 'content/old-world'
+    create: true
+    slug: '{{fields.arc}}-{{fields.chapter}}-{{slug}}'
+    nested:
+      depth: 2
+    fields:
+      - { label: 'Arc', name: 'arc', widget: 'string', default: 'Old World' }
+      - { label: 'Chapter', name: 'chapter', widget: 'string' }
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Date', name: 'date', widget: 'datetime' }
+      - { label: 'Tags', name: 'tags', widget: 'list' }
+      - { label: 'Body', name: 'body', widget: 'markdown' }

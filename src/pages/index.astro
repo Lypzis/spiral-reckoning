@@ -1,11 +1,57 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+const pages = await Astro.glob('../../content/*/*/*.md');
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+function groupByChapter(pages) {
+  const result = {};
+  for (const p of pages) {
+    const parts = p.file.split('/');
+    const arc = parts.at(-3);
+    const chapter = parts.at(-2);
+    const slug = parts.at(-1).replace('.md', '');
+
+    if (!result[arc]) result[arc] = {};
+    if (!result[arc][chapter]) result[arc][chapter] = [];
+
+    result[arc][chapter].push({
+      slug,
+      arc,
+      chapter,
+      title: p.frontmatter.title,
+      date: p.frontmatter.date,
+    });
+  }
+  return result;
+}
+
+const grouped = groupByChapter(pages);
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<html>
+  <head>
+    <title>The Spiral Reckoning – Archive</title>
+  </head>
+  <body class="px-6 py-10 text-white bg-black font-sans">
+    <h1 class="text-4xl font-bold mb-6">📜 The Spiral Reckoning – Archive</h1>
+
+    {Object.entries(grouped).map(([arc, chapters]) => (
+      <section class="mb-8">
+        <h2 class="text-2xl font-bold text-yellow-400 mb-2">{arc}</h2>
+
+        {Object.entries(chapters).map(([chapter, entries]) => (
+          <div class="ml-4 mb-4">
+            <h3 class="text-xl font-semibold text-orange-300 mb-1">{chapter.replace('-', ' ')}</h3>
+            <ul class="ml-4 list-disc text-gray-300">
+              {entries.map(entry => (
+                <li>
+                  <a class="hover:underline text-indigo-400" href={`/lore/${entry.arc}/${entry.chapter}/${entry.slug}`}>
+                    {entry.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </section>
+    ))}
+  </body>
+</html>

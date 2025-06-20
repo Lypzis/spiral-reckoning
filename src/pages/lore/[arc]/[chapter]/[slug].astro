@@ -1,0 +1,33 @@
+---
+export async function getStaticPaths() {
+  const pages = await Astro.glob('../../../../../content/*/*/*.md');
+
+  return pages.map((page) => {
+    const parts = page.file.split('/');
+    const arc = parts.at(-3);
+    const chapter = parts.at(-2);
+    const slug = parts.at(-1).replace('.md', '');
+
+    return { params: { arc, chapter, slug } };
+  });
+}
+
+const { arc, chapter, slug } = Astro.params;
+const pages = await Astro.glob('../../../../../content/*/*/*.md');
+const matchPath = `content/${arc}/${chapter}/${slug}.md`;
+const page = pages.find((p) => p.file.includes(matchPath));
+
+if (!page) throw new Error(`Artifact not found: ${matchPath}`);
+
+const { Content, frontmatter } = await page;
+---
+
+<html lang="en">
+  <head>
+    <title>{frontmatter.title}</title>
+  </head>
+  <body class="prose mx-auto px-8 py-12">
+    <h1 class="text-3xl font-bold mb-4">{frontmatter.title}</h1>
+    <Content />
+  </body>
+</html>
