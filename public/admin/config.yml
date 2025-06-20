@@ -2,7 +2,9 @@ backend:
   name: github
   repo: Lypzis/spiral-reckoning
   branch: main
-  auth_scope: repo
+  login: https://dev-oreqc0y3824yogsb.auth0.com
+  auth_type: implicit
+  app_id: w4ulgI2XJwsspuU6XJg2Ya0Y4QJXMC47
 
 media_folder: 'public/uploads'
 public_folder: '/uploads'
